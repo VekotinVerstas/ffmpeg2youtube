@@ -1,6 +1,6 @@
 #!/bin/bash
-cd /usr/local/bin
-screen -AdmS UEI -t 'Ffmpeg' '/usr/local/bin/ffmpeg2youtube'
-screen -S UEI -X screen -t 'Aisbot' '/usr/local/bin/ais/ais.py'
-screen -S UEI -X screen -t 'Sensors' '/usr/local/bin/sensors.py'
+cd /usr/local/bin/ffmpeg2youtube
+screen -AdmS UEI -t 'Ffmpeg' '/usr/local/bin/ffmpeg2youtube/ffmpeg2youtube'
+screen -S UEI -X screen -t 'Aisbot' '/usr/local/bin/ffmpeg2youtube/ais/ais.py'
+screen -S UEI -X screen -t 'Sensors' '/usr/local/bin/ffmpeg2youtube/sensors.py'
 screen -S UEI -X screen -t 'Terminal' 'bash'
