@@ -1,0 +1,10 @@
+FFMPEG="/usr/local/bin/ffmpeg"
+
+#YouTube Key
+YOUTUBE_URL="rtmp://x.rtmp.youtube.com/live2"
+#YouTube key
+YOUTUBE_KEY="1234-5678-90ab-cdef-ghij"
+
+#Camera RTSP URL(s) change user & password and port nuber at the end if needed
+RTSP_URL="rtsp://user:password@address.mom:554"
+RTSP_URL2="rtsp://user:password@address.mom:554"

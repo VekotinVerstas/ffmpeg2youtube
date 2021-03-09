@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#Change keys and private urls in Identityfile
+source ffmpeg2youtubeIdentity
+
+#Use some font that you have ;)
+AISTEXT='drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf: fontcolor=white: fontsize=24: textfile=ais/ais.txt: reload=1: box=1: boxcolor=black@0.5:boxborderw=5: x=30: y=100'
+
+LIVETEXT='drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf: fontcolor=white: fontsize=24: text='Vasikkasaari-live': x=main_w-250: y=main_h-30'
+
+SENSORTEXT='drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf: fontcolor=white: fontsize=24: textfile=sensor.txt: reload=1: box=1: boxcolor=black@0.5:boxborderw=5: x=30: y=300'
+
+while [ 1 ]
+do
+    now=$(date +"%D %T")
+    echo "$now ${SERVICE} is NOT running! Starting now..." >> log 
+    sleep 1
+    
+    #(dummy audio)
+    ${FFMPEG} -nostdin -rtbufsize 8M -thread_queue_size 2024 -rtsp_transport tcp -i ${RTSP_URL} -i eu.jpg -i cb.jpg -f lavfi -i anullsrc -filter_complex "${AISTEXT}, ${LIVETEXT}, ${SENSORTEXT}[ais]; [ais][1:v] overlay=10:main_h-overlay_h-10[logo1]; [logo1][2:v] overlay=240:main_h-overlay_h-10[outv1]" -vcodec libx264 -pix_fmt yuv420p -s 1920x1080 -bit_rate 6500k -rtbufsize 8M -b:v 9000k -maxrate 4500k -bufsize 9000k -preset ultrafast -tune zerolatency -crf 20 -g 60 -acodec libmp3lame -ar 44100 -b:a 128k -map "[outv1]" -map 3:a -f flv ${YOUTUBE_URL}/${YOUTUBE_KEY} 
+
+    #last PIP
+    #/usr/local/bin/ffmpeg -nostdin -rtbufsize 8M -thread_queue_size 2024 -rtsp_transport tcp -i ${RTSP_URL} -i eu.jpg -i cb.jpg -rtbufsize 8M -thread_queue_size 2024 -rtsp_transport tcp -i ${RTSP_URL2} -f lavfi -i anullsrc -filter_complex "drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf: fontcolor=white: fontsize=24: textfile=ais/ais.txt: reload=1: box=1: boxcolor=black@0.5:boxborderw=5: x=30: y=100[ais]; [ais][1:v] overlay=10:main_h-overlay_h-10[logo1]; [logo1][2:v] overlay=240:main_h-overlay_h-10[logo2]; [3:v]scale=iw/5:ih/5[pip]; [logo2][pip] overlay=main_w-overlay_w-10:main_h-overlay_h-10[outv1]" -vcodec libx264 -s 1920x1080 -bit_rate 4500k -rtbufsize 8M -b:v 9000k -maxrate 4500k -bufsize 9000k -preset ultrafast -tune zerolatency -crf 20 -g 60 -acodec libmp3lame -ar 44100 -b:a 128k -map "[outv1]" -map 4:a -f flv ${YOUTUBE_URL}/${YOUTUBE_KEY} 
+
+    #Split code VIDEO size ISSUE
+    #/usr/local/bin/ffmpeg -nostdin -rtbufsize 8M -thread_queue_size 2024 -rtsp_transport tcp -i ${RTSP_URL} -i eu.jpg -i cb.jpg -rtbufsize 8M -thread_queue_size 2024 -rtsp_transport tcp -i ${RTSP_URL2} -f lavfi -i anullsrc -filter_complex "drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf: fontcolor=white: fontsize=24: textfile=ais/ais.txt: reload=1: box=1: boxcolor=black@0.5:boxborderw=5: x=30: y=100[ais]; [ais][1:v] overlay=10:main_h-overlay_h-10[logo1]; [logo1][2:v] overlay=240:main_h-overlay_h-10[logo2]; [3:v]scale=iw/5:ih/5[pip]; [logo2][pip] overlay=main_w-overlay_w-10:main_h-overlay_h-10,split=2[outv1][outv2]" -vcodec libx264 -bit_rate 4500k -rtbufsize 8M -b:v 9000k -maxrate 4500k -bufsize 9000k -preset ultrafast -tune zerolatency -crf 20 -g 60 -acodec libmp3lame -ar 44100 -b:a 128k -map "[outv1]" -map 4:a -f flv rtmp://live.twitch.tv/app/live_532772587_ELCxd2QkaG5nbbhdmeKcECFM3u4Y2z -crf 20 -g 60 -map "[outv2]" -f flv ${YOUTUBE_URL}/${YOUTUBE_KEY}
+
+    #real tee dual output (dummy audio) VIDEO SIZE ISSUE
+    #/usr/local/bin/ffmpeg -nostdin -rtbufsize 8M -thread_queue_size 2024 -rtsp_transport tcp -i ${RTSP_URL} -i eu.jpg -i cb.jpg -rtbufsize 8M -thread_queue_size 2024 -rtsp_transport tcp -i ${RTSP_URL2} -f lavfi -i anullsrc -filter_complex "drawtext=fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf: fontcolor=white: fontsize=24: textfile=ais/ais.txt: reload=1: box=1: boxcolor=black@0.5:boxborderw=5: x=30: y=100[ais]; [ais][1:v] overlay=10:main_h-overlay_h-10[logo1]; [logo1][2:v] overlay=240:main_h-overlay_h-10[logo2]; [3:v]scale=iw/5:ih/5[pip]; [logo2][pip] overlay=main_w-overlay_w-10:main_h-overlay_h-10[outv1]" -vcodec libx264 -s 1920x1080 -bit_rate 4500k -rtbufsize 8M -b:v 9000k -maxrate 4500k -bufsize 9000k -preset ultrafast -tune zerolatency -crf 20 -g 60 -acodec libmp3lame -ar 44100 -b:a 128k -map "[outv1]" -map 4:a -f tee "[f=flv]${YOUTUBE_URL}/${YOUTUBE_KEY}" 
+
+#-pix_fmt yuv420p -flags +global_header
+
+done

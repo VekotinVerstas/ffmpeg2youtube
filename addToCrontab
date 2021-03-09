@@ -1,0 +1,5 @@
+#At reboot start screen process to attach to screen instance use screen -r 
+@reboot /usr/local/bin/ffmpeg2youtube/ffmpeg2youtubeScreen
+
+#kill ffmpeg perioticaly just to make sure it does not hang for a long
+5,25,45 * * * * /usr/local/bin/ffmpeg2youtube/ffmpegrestart.sh
