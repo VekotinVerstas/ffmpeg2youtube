@@ -7,5 +7,5 @@ ffmpeg2youtube is simple script to call ffmpeg to read from camera rstp stream, 
 
 ais directory has ais.py script to find passing ship info to ais.txt file. ais.txt is used to feed info to ffmpeg
 
-sensor.py is collecting Uiras (local water temp) and local weather station info to sensor.txt file whis is again read by ffmpeg to insert sensor info to stream.
+uiras.py is collecting Uiras (local water temp) and local weather station info to sensor.txt file whis is again read by ffmpeg to insert sensor info to stream.
 
